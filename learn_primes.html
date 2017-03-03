@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Learn primes</title>
+  <title>Factor things</title>
   <style>
     html {
       height: 100%;
@@ -55,6 +55,7 @@
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
     crossorigin="anonymous">
   </script>
+  <script src="./Uri.js"></script>
 </head>
 <body>
 
@@ -69,8 +70,12 @@
   <script>
     'use strict'
 
-    let MAX_NUM = 100;  // Recommended: 1000.
-    let NUM_GROUPS = 5;  // Recommended: 10.
+    // Parse query params. They are all optional.
+    let uri = new Uri(location.href);
+    let groupNum = uri.getQueryParamValue('group');
+    let numGroups = uri.getQueryParamValue('num_groups') || 10;
+    let maxNum = uri.getQueryParamValue('max_num') || 100;
+
     let MODERATELY_BIG_PRIME_1 = 3759289
     let MODERATELY_BIG_PRIME_2 = 8619943
     let COLORS = ['gray', 'maroon', 'red', 'fuchsia', 'green',
@@ -96,8 +101,13 @@
       $overlay = $('.js-overlay');
       $statusText = $('.js-status-text');
 
-      $label.text('Enter group number to start (0 to ' + (NUM_GROUPS - 1)
-                  + ').');
+      let initialMessage = 'Hit enter to begin.';
+      if (groupNum === undefined) {
+        initialMessage = ('Enter group number to start (0 to ' +
+                          (numGroups - 1) + ').');
+      }
+      $label.text(initialMessage);
+
       $input.focus();
       $input.on('keypress', function (e) {
         if (e.which === 13) {
@@ -113,9 +123,11 @@
 
     function submit(input) {
       if (!started) {
-        let groupNum = parseInt(input);
-        if (isNaN(groupNum)) {
-          throw 'Invalid group number "' + input + '"';
+        if (groupNum === undefined) {
+          groupNum = parseInt(input);
+          if (isNaN(groupNum)) {
+            throw 'Invalid group number "' + input + '"';
+          }
         }
 
         // Initialize the state.
@@ -222,12 +234,12 @@
     }
 
     function getGroup(groupNum) {
-      if (groupNum < 0 || groupNum >= NUM_GROUPS) {
+      if (groupNum < 0 || groupNum >= numGroups) {
         throw ('Invalid group number ' + groupNum +', ' +
-               'max is ' + (NUM_GROUPS - 1));
+               'max is ' + (numGroups - 1));
       }
       let group = [];
-      for (let i = 1; i <= MAX_NUM; i++) {
+      for (let i = 1; i <= maxNum; i++) {
         if (toGroup(i) === groupNum) {
           group.push(i);
         }
@@ -240,7 +252,7 @@
     }
 
     function toGroup(x) {
-      return hash2(x, NUM_GROUPS);
+      return hash2(x, numGroups);
     }
 
     function hash1(x, mod) {
