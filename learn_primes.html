@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Learn primes</title>
+  <style>
+    html {
+      height: 100%;
+      font-size: 14px;
+    }
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      color: #444;
+      background: #eee;
+      text-align: center;
+    }
+    .container {
+      display: inline-block;
+      position: absolute;
+      top: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      text-align: center;
+      width: 100%;
+    }
+    .label {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .js-is-active {
+      font-size: 42px;
+    }
+    .input {
+      font-size: 18px;
+      height: 24px;
+      border-radius: 3px;
+      border: 1px solid lightgrey;
+      padding: 5px 15px;
+      transition: 300ms ease border-color;
+    }
+    .input:focus {
+      outline: none;
+      border-color: grey;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+    }
+  </style>
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous">
+  </script>
+</head>
+<body>
+
+  <div class="container">
+    <p><label for="input" class="js-label label">Loading…</label></p>
+    <p><input type="text" id="input" class="js-input input"></p>
+    <p class="js-status-text"></p>
+  </div>
+
+  <div class="js-overlay overlay"></div>
+
+  <script>
+    'use strict'
+
+    let MAX_NUM = 100;  // Recommended: 1000.
+    let NUM_GROUPS = 5;  // Recommended: 10.
+    let MODERATELY_BIG_PRIME_1 = 3759289
+    let MODERATELY_BIG_PRIME_2 = 8619943
+    let COLORS = ['gray', 'maroon', 'red', 'fuchsia', 'green',
+                  'navy', 'teal', 'orange', 'olive', 'rebeccapurple'];
+
+    // jQuery elements.
+    let $input;
+    let $label;
+    let $overlay;
+    let $statusText;
+
+    // State.
+    let started = false;
+    let remaining = null;
+    let initialCount = null;
+    let errorCount = null;
+    let currentNum = null;
+    let currentFactorsCount = null;
+
+    function main() {
+      $input = $('.js-input');
+      $label = $('.js-label');
+      $overlay = $('.js-overlay');
+      $statusText = $('.js-status-text');
+
+      $label.text('Enter group number to start (0 to ' + (NUM_GROUPS - 1)
+                  + ').');
+      $input.focus();
+      $input.on('keypress', function (e) {
+        if (e.which === 13) {
+          try {
+            submit($input.val());
+          } catch (e) {
+            alert('Error: ' + e);
+          }
+          $input.val('');
+        }
+      });
+    }
+
+    function submit(input) {
+      if (!started) {
+        let groupNum = parseInt(input);
+        if (isNaN(groupNum)) {
+          throw 'Invalid group number "' + input + '"';
+        }
+
+        // Initialize the state.
+        remaining = getGroup(groupNum);
+        initialCount = remaining.length;
+        errorCount = 0;
+        nextNum();
+        started = true;
+        $label.addClass('js-is-active');
+      } else {
+        let intList = parseIntList(input);
+        if (intList.length === 0) {
+          return;
+        }
+        if (areCorrectFactors(intList)) {
+          nextNum();
+        } else {
+          flashBackground('red');
+          errorCount++;
+        }
+      }
+    }
+
+    function nextNum() {
+      if (remaining.length === 0) {
+        // Finish.
+        $label.text('Done!');
+        $label.removeAttr('style');
+        $label.removeClass('js-is-active');
+        $input.remove();
+        $statusText.text('You factored ' + initialCount + ' numbers' +
+                         ' with ' + errorCount + ' errors.');
+        return;
+      }
+      let chosenIndex = Math.floor(Math.random() * remaining.length);
+      currentNum = remaining.splice(chosenIndex, 1)[0];
+      let factors = factor(currentNum);
+      console.debug('Factored ', currentNum, ' into ', factors);
+      currentFactorsCount = factors.length;
+      $label.text(currentNum);
+      $label.css('color', toColor(currentNum));
+      $statusText.text('Remaining: ' + (remaining.length + 1));
+    }
+
+    function factor(x) {
+      if (x < 1) {
+        throw 'Cannot factor ' + x;
+      }
+      if (x === 1) {
+        return [1];
+      }
+      let bound = Math.floor(Math.sqrt(x));
+      for (let i = 2; i <= bound; i++) {
+        if (x % i === 0) {
+          let factors = [i].concat(factor(x / i));
+          return factors;
+        }
+      }
+      return [x];
+    }
+
+    function parseIntList(s) {
+      let values = s.split(/[,\s]+/);
+      if (values.length > 0 && /^\s*$/.test(values[values.length - 1])) {
+        values.pop();
+      }
+      let ints = [];
+      for (let value of values) {
+        let int = parseInt(value);
+        if (isNaN(int)) {
+          throw 'Invalid response, "' + value + '" is not a number';
+        }
+        ints.push(int);
+      }
+      return ints;
+    }
+
+    function areCorrectFactors(intList) {
+      return (intList.length === currentFactorsCount &&
+              verifyProduct(intList, currentNum));
+    }
+
+    function verifyProduct(intList, expectedProduct) {
+      if (intList.length === 1) {
+        return intList[0] === expectedProduct;
+      }
+      let product = 1;
+      for (let int of intList) {
+        // The number 1 is not allowed unless it is the only factor.
+        if (int === 1) {
+          return false;
+        }
+        product *= int;
+      }
+      return product === expectedProduct;
+    }
+
+    function flashBackground(color) {
+      ($overlay
+          .stop()
+          .css('background-color', color)
+          .css('opacity', 0.3)
+          .animate({'opacity': 0}, 300));
+    }
+
+    function getGroup(groupNum) {
+      if (groupNum < 0 || groupNum >= NUM_GROUPS) {
+        throw ('Invalid group number ' + groupNum +', ' +
+               'max is ' + (NUM_GROUPS - 1));
+      }
+      let group = [];
+      for (let i = 1; i <= MAX_NUM; i++) {
+        if (toGroup(i) === groupNum) {
+          group.push(i);
+        }
+      }
+      return group;
+    }
+
+    function toColor(x) {
+      return COLORS[hash1(x, COLORS.length)];
+    }
+
+    function toGroup(x) {
+      return hash2(x, NUM_GROUPS);
+    }
+
+    function hash1(x, mod) {
+      return fastModularExponentiation(x, MODERATELY_BIG_PRIME_1,
+                                       MODERATELY_BIG_PRIME_2) % mod;
+    }
+
+    function hash2(x, mod) {
+      return fastModularExponentiation(x, MODERATELY_BIG_PRIME_2,
+                                       MODERATELY_BIG_PRIME_1) % mod;
+    }
+
+    // https://gist.github.com/krzkaczor/0bdba0ee9555659ae5fe
+    function fastModularExponentiation(a, b, n) {
+      a = a % n;
+      var result = 1;
+      var x = a;
+
+      while(b > 0){
+        var leastSignificantBit = b % 2;
+        b = Math.floor(b / 2);
+
+        if (leastSignificantBit == 1) {
+          result = result * x;
+          result = result % n;
+        }
+
+        x = x * x;
+        x = x % n;
+      }
+      return result;
+    };
+
+    $(document).ready(main);
+
+  </script>
+</body>
+</html>
