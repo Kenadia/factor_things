@@ -1,0 +1,8 @@
+Select number with probability inversely proportional to their level.
+Divide level by half and floor when you make an error.
+Only increment if you got it on the first try.
+Fix the screwed up form and query params business.
+- http://stackoverflow.com/questions/11178426/how-can-i-pass-data-from-flask-to-javascript-in-a-template
+Show parameters on the go page.
+Make the form look better.
+Show stats on the index page.
