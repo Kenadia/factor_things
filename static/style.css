@@ -8,6 +8,13 @@ body {
   background: #eee;
   text-align: center;
 }
+
+.form-label {
+  display: inline-block;
+  width: 200px;
+  text-align: right;
+}
+
 .container {
   display: inline-block;
   position: absolute;

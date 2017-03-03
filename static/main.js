@@ -2,9 +2,11 @@
 
 // Parse query params. They are all optional.
 let uri = new Uri(location.href);
-let groupNum = uri.getQueryParamValue('group');
-let numGroups = uri.getQueryParamValue('num_groups') || 10;
-let maxNum = uri.getQueryParamValue('max_num') || 100;
+let groupNum = parseInt(uri.getQueryParamValue('group'));
+let numGroups = parseInt(uri.getQueryParamValue('num_groups')) || 10;
+let maxNum = parseInt(uri.getQueryParamValue('max_num')) || 100;
+let user = uri.getQueryParamValue('user');
+let ignore_levels = uri.getQueryParamValue('ignore_levels') === 'true';
 
 let MODERATELY_BIG_PRIME_1 = 3759289
 let MODERATELY_BIG_PRIME_2 = 8619943
@@ -31,10 +33,33 @@ function main() {
   $overlay = $('.js-overlay');
   $statusText = $('.js-status-text');
 
-  let initialMessage = 'Hit enter to begin.';
+  if (user === undefined) {
+    setUp();
+    return
+  }
+
+  ($.get('/levels', {'user': user, 'max_num': maxNum})
+      .done(function (response) {
+        console.log('Got response ', response);
+        setUp();
+      })
+      .fail(function (error) {
+        $label.text('Could not load the page, an error occurred.');
+      }));
+}
+
+function setUp() {
+  let initialMessage = ''
+
+  if (user !== undefined) {
+    initialMessage += 'Hello, ' + capitalize(user) + '. ';
+  }
+
   if (groupNum === undefined) {
-    initialMessage = ('Enter group number to start (0 to ' +
+    initialMessage += ('Enter group number to start (0 to ' +
                       (numGroups - 1) + ').');
+  } else {
+    initialMessage += 'Hit enter to begin.';
   }
   $label.text(initialMessage);
 
@@ -49,6 +74,13 @@ function main() {
       $input.val('');
     }
   });
+}
+
+function capitalize(s) {
+  if (s === '') {
+    return '';
+  }
+  return s[0].toUpperCase() + s.slice(1);
 }
 
 function submit(input) {
@@ -73,8 +105,14 @@ function submit(input) {
       return;
     }
     if (areCorrectFactors(intList)) {
+      if (user !== undefined) {
+        $.post('/up', {'user': user, 'number': currentNum});
+      }
       nextNum();
     } else {
+      if (user !== undefined) {
+        $.post('/down', {'user': user, 'number': currentNum});
+      }
       flashBackground('red');
       errorCount++;
     }

@@ -9,17 +9,25 @@
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
     crossorigin="anonymous">
   </script>
-  <script src="./Uri.js"></script>
-  <script src="./main.js" defer></script>
+  <script src="./index.js"></script>
 </head>
 <body>
-
   <div class="container">
-    <p><label for="input" class="js-label label">Loading…</label></p>
-    <p><input type="text" id="input" class="js-input input"></p>
-    <p class="js-status-text"></p>
+    <form action="javascript:void(0);">
+      <label class="form-label" for="num_groups">Number of groups:</label>
+      <input type="text" class="input" id="num_groups">
+      <br>
+      <label class="form-label" for="group">Group:</label>
+      <input type="text" class="input" id="group">
+      <br>
+      <label class="form-label" for="max_num">Max number:</label>
+      <input type="text" class="input" id="max_num">
+      <br>
+      <label class="form-label" for="user">User name:</label>
+      <input type="text" class="input" id="user">
+      <br>
+      <button type="submit" class="js-submit">Go</button>
+    </form>
   </div>
-
-  <div class="js-overlay overlay"></div>
 </body>
 </html>
