@@ -23,7 +23,7 @@ def go():
     num_groups=request.form['num_groups'],
     max_num=request.form['max_num'],
     user=request.form['user'],
-    ignore_levels=False,
+    ignore_levels=request.form.get('ignore_levels') == 'on',
   )
 
 

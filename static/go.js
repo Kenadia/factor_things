@@ -7,7 +7,7 @@ const DEBUG_MODE = true;
 // - numGroups
 // - maxNum
 // - user
-// - ignore_levels
+// - ignoreLevels
 
 let MODERATELY_BIG_PRIME_1 = 3759289
 let MODERATELY_BIG_PRIME_2 = 8619943
@@ -108,7 +108,10 @@ function submit(input) {
         throw 'Missing level data for number ' + num;
       }
       let level = levelData[num];
-      let weight = 1.0 / (level + 1);
+      let weight = 1.0;
+      if (!ignoreLevels) {
+        weight /= (level + 1);
+      }
       remaining.add(num, weight);
     }
     initialCount = remaining.length;
