@@ -16,8 +16,10 @@ def index():
   return flask.render_template('index.html')
 
 
-@app.route('/go', methods=('POST',))
+@app.route('/go', methods=('GET', 'POST'))
 def go():
+  if request.method == 'GET':
+    return flask.redirect('/', code=302)
   return flask.render_template('go.html',
     group_num=request.form['group'],
     num_groups=request.form['num_groups'],
