@@ -48,6 +48,8 @@ def up():
   if user is None or number is None:
     return flask.jsonify({})
 
+  # Increment level.
+
   record = mongo.db.levels.find_one({'user': user, 'number': number})
 
   if record is None:
@@ -68,6 +70,8 @@ def down():
   if user is None or number is None:
     return flask.jsonify({})
 
+  # Cut level by half.
+
   record = mongo.db.levels.find_one({'user': user, 'number': number})
 
   if record is None:
@@ -76,7 +80,8 @@ def down():
   else:
     level = record['level']
     if level > MIN_LEVEL:
-      mongo.db.levels.update({'_id': record['_id']}, {'$inc': {'level': -1}})
+      mongo.db.levels.update({'_id': record['_id']},
+                             {'$set': {'level': level / 2}})
   return flask.jsonify({})
 
 
