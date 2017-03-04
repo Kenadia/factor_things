@@ -16,9 +16,15 @@ def index():
   return flask.render_template('index.html')
 
 
-@app.route('/go', methods=('GET',))
+@app.route('/go', methods=('POST',))
 def go():
-  return flask.render_template('go.html')
+  return flask.render_template('go.html',
+    group_num=request.form['group'],
+    num_groups=request.form['num_groups'],
+    max_num=request.form['max_num'],
+    user=request.form['user'],
+    ignore_levels=False,
+  )
 
 
 @app.route('/levels', methods=('GET',))

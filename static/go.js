@@ -2,13 +2,12 @@
 
 const DEBUG_MODE = true;
 
-// Parse query params. They are all optional.
-let uri = new Uri(location.href);
-let groupNum = parseInt(uri.getQueryParamValue('group'));
-let numGroups = parseInt(uri.getQueryParamValue('num_groups')) || 10;
-let maxNum = parseInt(uri.getQueryParamValue('max_num')) || 100;
-let user = uri.getQueryParamValue('user');
-let ignore_levels = uri.getQueryParamValue('ignore_levels') === 'true';
+// Params from the server:
+// - groupNum
+// - numGroups
+// - maxNum
+// - user
+// - ignore_levels
 
 let MODERATELY_BIG_PRIME_1 = 3759289
 let MODERATELY_BIG_PRIME_2 = 8619943
