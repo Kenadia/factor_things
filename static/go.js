@@ -26,6 +26,7 @@ let initialCount = null;
 let errorCount = null;
 let currentNum = null;
 let currentFactorsCount = null;
+let firstTry = null;
 
 function main() {
   $input = $('.js-input');
@@ -105,7 +106,7 @@ function submit(input) {
       return;
     }
     if (areCorrectFactors(intList)) {
-      if (user !== undefined) {
+      if (user !== undefined && firstTry) {
         $.post('/up', {'user': user, 'number': currentNum});
       }
       nextNum();
@@ -115,6 +116,7 @@ function submit(input) {
       }
       flashBackground('red');
       errorCount++;
+      firstTry = false;
     }
   }
 }
@@ -130,11 +132,14 @@ function nextNum() {
                      ' with ' + errorCount + ' errors.');
     return;
   }
+
   let chosenIndex = Math.floor(Math.random() * remaining.length);
   currentNum = remaining.splice(chosenIndex, 1)[0];
   let factors = factor(currentNum);
   console.debug('Factored ', currentNum, ' into ', factors);
   currentFactorsCount = factors.length;
+  firstTry = true;
+
   $label.text(currentNum);
   $label.css('color', toColor(currentNum));
   $statusText.text('Remaining: ' + (remaining.length + 1));
