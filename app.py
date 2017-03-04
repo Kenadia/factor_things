@@ -33,7 +33,7 @@ def levels():
   for record in records:
     data[record['number']] = record['level']
 
-  for i in xrange(max_num):
+  for i in xrange(1, max_num + 1):
     if i not in data:
       data[i] = INITIAL_LEVEL
 

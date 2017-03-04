@@ -1,5 +1,7 @@
 'use strict'
 
+const DEBUG_MODE = true;
+
 // Parse query params. They are all optional.
 let uri = new Uri(location.href);
 let groupNum = parseInt(uri.getQueryParamValue('group'));
@@ -18,6 +20,9 @@ let $input;
 let $label;
 let $overlay;
 let $statusText;
+
+// Server info.
+let levelData;
 
 // State.
 let started = false;
@@ -41,7 +46,10 @@ function main() {
 
   ($.get('/levels', {'user': user, 'max_num': maxNum})
       .done(function (response) {
-        console.log('Got response ', response);
+        levelData = response['data'];
+        if (DEBUG_MODE) {
+          console.debug('Got level data:', levelData);
+        }
         setUp();
       })
       .fail(function (error) {
@@ -94,7 +102,16 @@ function submit(input) {
     }
 
     // Initialize the state.
-    remaining = getGroup(groupNum);
+    remaining = new Distribution();
+    let numList = getGroup(groupNum);
+    for (let num of numList) {
+      if (!(num in levelData)) {
+        throw 'Missing level data for number ' + num;
+      }
+      let level = levelData[num];
+      let weight = 1.0 / (level + 1);
+      remaining.add(num, weight);
+    }
     initialCount = remaining.length;
     errorCount = 0;
     nextNum();
@@ -121,6 +138,34 @@ function submit(input) {
   }
 }
 
+class Distribution {
+  constructor() {
+    this.event_dict = {};
+    this.length = 0;
+    this.totalWeight = 0.0;
+  }
+  add(event, weight) {
+    this.event_dict[event] = weight;
+    this.length++;
+    this.totalWeight += weight;
+  }
+  popRandom() {
+    let random = Math.random() * this.totalWeight;
+    let sum = 0.0;
+    let event;
+    for (event in this.event_dict) {
+      sum += this.event_dict[event];
+      if (sum > random) {
+        break;
+      }
+    }
+    this.totalWeight -= this.event_dict[event];
+    delete this.event_dict[event];
+    this.length--;
+    return event;
+  }
+}
+
 function nextNum() {
   if (remaining.length === 0) {
     // Finish.
@@ -133,10 +178,11 @@ function nextNum() {
     return;
   }
 
-  let chosenIndex = Math.floor(Math.random() * remaining.length);
-  currentNum = remaining.splice(chosenIndex, 1)[0];
+  currentNum = parseInt(remaining.popRandom());
   let factors = factor(currentNum);
-  console.debug('Factored ', currentNum, ' into ', factors);
+  if (DEBUG_MODE) {
+    console.debug('Factored', currentNum, 'into', factors);
+  }
   currentFactorsCount = factors.length;
   firstTry = true;
 

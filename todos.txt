@@ -1,4 +1,3 @@
-Select number with probability inversely proportional to their level.
 Fix the screwed up form and query params business.
 - http://stackoverflow.com/questions/11178426/how-can-i-pass-data-from-flask-to-javascript-in-a-template
 Show parameters on the go page.
