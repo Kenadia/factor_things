@@ -209,10 +209,13 @@ function factor(x) {
 }
 
 function parseIntList(s) {
+  // Strip the ends.
+  s = s.match(/^\s*(.*?),?\s*$/)[1]
+
+  // Split on comma and/or whitespace.
   let values = s.split(/[,\s]+/);
-  if (values.length > 0 && /^\s*$/.test(values[values.length - 1])) {
-    values.pop();
-  }
+
+  // Parse as integers.
   let ints = [];
   for (let value of values) {
     let int = parseInt(value);
@@ -221,6 +224,7 @@ function parseIntList(s) {
     }
     ints.push(int);
   }
+
   return ints;
 }
 
