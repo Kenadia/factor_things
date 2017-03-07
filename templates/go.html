@@ -12,18 +12,23 @@
 
   <!-- Parse params. -->
   <script>
-    let groupNum = parseInt('{{ group_num }}');
+    let groupNum = parseInt('{{ group }}');
     let numGroups = parseInt('{{ num_groups }}');
     let maxNum = parseInt('{{ max_num }}');
     let user = '{{ user }}';
     let ignoreLevels = '{{ ignore_levels }}' === 'True';
+    let gameId = '{{ game_id }}';
   </script>
 
   <script src="./go.js" defer></script>
 </head>
 <body>
 
-  <a href="/">Back</a>
+  <div class="toolbar">
+    User: {{ user }}
+    <a href="/landing?user={{ user }}&max_num={{ max_num }}&group={{ group }}&num_groups={{ num_groups }}">Back</a>
+    <a href="/">Log out</a>
+  </div>
 
   <div class="container">
     <p><label for="input" class="js-label label">Loading…</label></p>

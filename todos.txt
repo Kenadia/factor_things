@@ -1,3 +1,1 @@
 Show parameters on the go page.
-Make the form look better.
-Show stats on the index page.

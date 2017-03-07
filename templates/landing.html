@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Factor things</title>
+  <link rel="stylesheet" href="./style.css">
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous">
+  </script>
+</head>
+<body>
+  <div class="toolbar">
+    User: {{ user }}
+    <a href="/">Log out</a>
+  </div>
+  <div class="widgets-container">
+    <div class="widgets-left">
+      <div class="widget">
+        <div class="widget-header">
+          Records
+        </div>
+        <div class="widget-body">
+          yeah
+        </div>
+      </div>
+      <div class="widget">
+        <div class="widget-header">
+          New game type
+        </div>
+        <div class="widget-body">
+          <form action="/go" method="post">
+            <label class="form-label" for="max_num">Max number:</label>
+            <input class="input" type="text" name="max_num" id="max_num" value="{{ max_num }}">
+            <br>
+            <label class="form-label" for="group">Group:</label>
+            <input class="input small-text-input" type="text" name="group" id="group" value="{{ group }}">
+            of
+            <input class="input small-text-input" type="text" name="num_groups" id="num_groups" value="{{ num_groups }}">
+            <br>
+            <!-- <label class="form-label" for="ignore_levels">Ignore levels:</label> -->
+            <!-- <input class="input" type="checkbox" name="ignore_levels" id="ignore_levels"> -->
+            <!-- <br> -->
+            <input type="hidden" name="ignore_levels" value="on">
+            <input type="hidden" name="user" value="{{ user }}">
+            <div class="u-text-align-right">
+              <input class="input" type="submit" value="Go">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="widgets-right">
+      <div class="widget">
+        <div class="widget-header">
+          Total counts
+        </div>
+        <div class="widget-body">
+          <table>
+            <thead>
+              <td>Level</td>
+              <td>Count</td>
+            </thead>
+            <tbody>
+            {% for level, count in level_counts|dictsort %}
+              <tr>
+                <td>{{ level }}</td>
+                <td>{{ count }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="widget">
+        <form action="/clear" method="post">
+          <input type="hidden" name="user" value="{{ user }}">
+          <input class="widget-body widget-body-button" type="submit" value="Clear all">
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

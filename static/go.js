@@ -8,6 +8,7 @@ const DEBUG_MODE = true;
 // - maxNum
 // - user
 // - ignoreLevels
+// - gameId
 
 let MODERATELY_BIG_PRIME_1 = 3759289
 let MODERATELY_BIG_PRIME_2 = 8619943
@@ -177,6 +178,11 @@ function nextNum() {
     $input.remove();
     $statusText.text('You factored ' + initialCount + ' numbers' +
                      ' with ' + errorCount + ' errors.');
+    $.post('/finish', {
+        user: user,
+        game_id: gameId,
+        error_count: errorCount,
+    })
     return;
   }
 

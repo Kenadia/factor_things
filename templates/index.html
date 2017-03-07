@@ -2,34 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Factor things</title>
   <link rel="stylesheet" href="./style.css">
-  <script
-    src="https://code.jquery.com/jquery-3.1.1.min.js"
-    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-    crossorigin="anonymous">
-  </script>
+  <title>Factor things</title>
 </head>
 <body>
   <div class="container">
-    <form action="/go" method="post">
-      <label class="form-label" for="num_groups">Number of groups:</label>
-      <input type="text" class="input" name="num_groups" id="num_groups">
+    <form action="landing" method="post">
+      <label class="label" for="user">Enter username:</label>
       <br>
-      <label class="form-label" for="group">Group:</label>
-      <input type="text" class="input" name="group" id="group">
-      <br>
-      <label class="form-label" for="max_num">Max number:</label>
-      <input type="text" class="input" name="max_num" id="max_num">
-      <br>
-      <label class="form-label" for="user">User name:</label>
-      <input type="text" class="input" name="user" id="user">
-      <br>
-      <label for="ignore_levels">Ignore levels:</label>
-      <input type="checkbox" name="ignore_levels" id="ignore_levels">
-      <br>
-      <input type="submit" value="Go">
+      <input class="input" type="text" name="user" id="user">
     </form>
   </div>
+
+  <script>
+    'use strict'
+
+    function main() {
+      document.getElementById('user').focus();
+    }
+
+    if (document.readyState != 'loading'){
+      main();
+    } else {
+      document.addEventListener('DOMContentLoaded', main);
+    }
+
+  </script>
+
 </body>
 </html>
