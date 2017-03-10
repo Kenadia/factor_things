@@ -110,10 +110,15 @@ def finish():
   game_id = request.form['game_id']
   error_count = request.form['error_count']
 
-  mongo.db.games.update({'_id': game_id}, {
-      {'$set': {'end_time': datetime.datetime.now()}},
-      {'$set': {'error_count': error_count}},
+  mongo.db.games.update({
+      '_id': game_id
+  }, {
+      '$set': {
+          'end_time': datetime.datetime.now(),
+          'error_count': error_count
+      },
   })
+  return flask.jsonify({})
 
 
 @app.route('/levels', methods=('GET',))

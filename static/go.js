@@ -130,12 +130,12 @@ function submit(input) {
     }
     if (areCorrectFactors(intList)) {
       if (user !== undefined && firstTry) {
-        $.post('/up', {'user': user, 'number': currentNum});
+        doPost('/up', {'user': user, 'number': currentNum})
       }
       nextNum();
     } else {
       if (user !== undefined) {
-        $.post('/down', {'user': user, 'number': currentNum});
+        doPost('/down', {'user': user, 'number': currentNum})
       }
       flashBackground('red');
       errorCount++;
@@ -181,11 +181,13 @@ function nextNum() {
     $input.remove();
     $statusText.text('You factored ' + initialCount + ' numbers' +
                      ' with ' + errorCount + ' errors.');
-    $.post('/finish', {
+    doPost('/finish', {
         user: user,
         game_id: gameId,
         error_count: errorCount,
-    })
+    }).done(function () {
+      flashMessage('Submitted results to the server.');
+    });
     return;
   }
 
@@ -267,6 +269,15 @@ function flashBackground(color) {
       .animate({'opacity': 0}, 300));
 }
 
+function flashMessage(message, isError) {
+  let extraClass = '';
+  if (!isError) {
+    extraClass = ' flash-message--green';
+  }
+  $('body').prepend('<div class="flash-message' + extraClass + '">' + message +
+                    '</div>');
+}
+
 function getGroup(groupNum) {
   if (groupNum < 0 || groupNum >= numGroups) {
     throw ('Invalid group number ' + groupNum +', ' +
@@ -319,5 +330,17 @@ function fastModularExponentiation(a, b, n) {
   }
   return result;
 };
+
+function doPost(url, payload) {
+  return $.ajax({
+    type: 'POST',
+    url: url,
+    data: payload,
+    dataType: 'json',
+    timeout: 1500,
+  }).fail(function () {
+    flashMessage('An error occurred trying to reach the server.', true);
+  });
+}
 
 $(document).ready(main);

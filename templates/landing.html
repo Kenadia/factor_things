@@ -13,7 +13,7 @@
 <body>
   {% with messages = get_flashed_messages() %}
     {% if messages %}
-      <div class="flask-flash">{{ messages[0] }}</div>
+      <div class="flash-message">{{ messages[0] }}</div>
     {% endif %}
   {% endwith %}
   <div class="toolbar">

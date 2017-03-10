@@ -8,7 +8,7 @@ body {
   background: #eee;
 }
 
-.flask-flash {
+.flash-message {
   position: fixed;
   z-index: 1;
   top: 0;
@@ -24,10 +24,15 @@ body {
   line-height: 31px;
   border-bottom-right-radius: 10px;
   opacity: .9;
-  animation: flaskflash 5s forwards;
+  white-space: nowrap;
+  animation: flash-message 5s forwards;
 }
 
-@keyframes flaskflash {
+.flash-message--green {
+  background-color: #8ACD21
+}
+
+@keyframes flash-message {
   0% {
     top: -32px;
   }
