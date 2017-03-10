@@ -52,6 +52,11 @@ body {
   line-height: 25px;
   text-align: center;
 }
+.params {
+  margin-top: 33px;
+  text-align: center;
+  font-size: 12px;
+}
 .container {
   display: inline-block;
   position: absolute;
