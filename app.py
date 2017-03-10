@@ -1,3 +1,4 @@
+from bson import objectid
 import datetime
 import flask
 from flask import request
@@ -111,7 +112,7 @@ def finish():
   error_count = request.form['error_count']
 
   mongo.db.games.update({
-      '_id': game_id
+      '_id': objectid.ObjectId(game_id),
   }, {
       '$set': {
           'end_time': datetime.datetime.now(),
