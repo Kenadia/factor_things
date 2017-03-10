@@ -10,6 +10,9 @@ const DEBUG_MODE = true;
 // - ignoreLevels
 // - gameId
 
+// Convert to zero-indexed.
+groupNum -= 1;
+
 let MODERATELY_BIG_PRIME_1 = 3759289
 let MODERATELY_BIG_PRIME_2 = 8619943
 let COLORS = ['gray', 'maroon', 'red', 'fuchsia', 'green',

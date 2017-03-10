@@ -8,6 +8,38 @@ body {
   background: #eee;
 }
 
+.flask-flash {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  min-width: 400px;
+  padding: 0 20px;
+  background: #ff6622;
+  color: white;
+  height: 32px;
+  left: 50%;
+  text-align: center;
+  transform: translateX(-50%);
+  border-bottom-left-radius: 10px;
+  line-height: 31px;
+  border-bottom-right-radius: 10px;
+  opacity: .9;
+  animation: flaskflash 5s forwards;
+}
+
+@keyframes flaskflash {
+  0% {
+    top: -32px;
+  }
+  8%,
+  92% {
+    top: 0;
+  }
+  100% {
+    top: -32px;
+  }
+}
+
 .toolbar {
   background: darkgrey;
   position: absolute;
